@@ -1,0 +1,15 @@
+{
+  "name": "my-koa-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon app"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "koa": "^2.14.1",
+    "mongoose": "^7.0.3"
+  }
+}
