@@ -3,7 +3,7 @@ const Router = require('koa-router')
 
 const router = new Router({prefix:'/users'})
 
-const UserCtl = require('../controllers/user')
+const UserCtl = require('../controllers/user') 
 
 // 查所有
 router.get('/',UserCtl.find)
@@ -19,6 +19,9 @@ router.patch('/:id',UserCtl.update)
 
 // 删除一个
 router.delete('/:id',UserCtl.delete)
+
+// 登陆
+router.post('/login',UserCtl.login)
 
 
 module.exports = router
