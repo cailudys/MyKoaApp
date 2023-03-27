@@ -3,12 +3,10 @@ const User = require('../models/users')
 class UserCtl {
     // 获取用户列表
     async find(ctx){
-        console.log('11111')
         ctx.body = await User.find();
     }
     // 获取指定用户
     async findById(ctx){
-        console.log('ctx.params.id',ctx.params.id)
         const user = await User.findById(ctx.params.id);
         if(!user){
             ctx.throw(404,'用户不存在')
@@ -22,7 +20,6 @@ class UserCtl {
     }
     // 更新接口
     async update(ctx){
-        console.log('222222')
         const user = await User.findByIdAndUpdate(ctx.params.id, ctx.request.body)
         if (!user){
             ctx.throw(404)
