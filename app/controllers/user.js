@@ -2,34 +2,42 @@ const User = require('../models/users')
 
 class UserCtl {
     // 获取用户列表
-    async find(ctx){
+    async find(ctx) {
         ctx.body = await User.find();
     }
     // 获取指定用户
-    async findById(ctx){
+    async findById(ctx) {
         const user = await User.findById(ctx.params.id);
-        if(!user){
-            ctx.throw(404,'用户不存在')
+        if (!user) {
+            ctx.throw(404, '用户不存在')
         }
         ctx.body = user;
     }
     // 新建用户
-    async create(ctx){
+    async create(ctx) {
+        ctx.verifyParams({
+            name: { type: 'string', required: true },
+            password: { type: 'string', required: true }
+        })
         const user = await new User(ctx.request.body).save()
         ctx.body = user
     }
     // 更新接口
-    async update(ctx){
+    async update(ctx) {
+        ctx.verifyParams({
+            name: { type: 'string', required: false },
+            password: { type: 'string', required: false }
+        })
         const user = await User.findByIdAndUpdate(ctx.params.id, ctx.request.body)
-        if (!user){
+        if (!user) {
             ctx.throw(404)
         }
         ctx.body = user
     }
     // 删除接口
-    async delete(ctx){
+    async delete(ctx) {
         const user = await User.findByIdAndRemove(ctx.params.id)
-        if (!user){
+        if (!user) {
             ctx.throw(404)
         }
         ctx.status = 204

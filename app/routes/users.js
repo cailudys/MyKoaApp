@@ -14,8 +14,8 @@ router.post('/',UserCtl.create)
 // 查单个
 router.get('/:id',UserCtl.findById)
 
-// 修改
-router.put('/:id',UserCtl.update)
+// 修改(部分修改)
+router.patch('/:id',UserCtl.update)
 
 // 删除一个
 router.delete('/:id',UserCtl.delete)

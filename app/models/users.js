@@ -5,7 +5,9 @@ const { Schema, model } = mongoose
 
 // 创建schema的作用是什么？
 const userSchema = new Schema({
-    name: { type: String, required: true }
+    __v: { type: Number, select: false },
+    name: { type: String, required: true },
+    password: { type: String, required: true, select: false }
 })
 
 // 利用schema创建用户模型,返回的
