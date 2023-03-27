@@ -3,22 +3,22 @@ const Router = require('koa-router')
 
 const router = new Router({prefix:'/users'})
 
-router.get('/',(ctx)=>{
-    ctx.body = db;
-})
+const UserCtl = require('../controllers/user')
 
-router.post('/',(ctx)=>{
-    // ctx.body = db;
-})
+// 查所有
+router.get('/',UserCtl.find)
 
-router.get('/:id',(ctx)=>{
-    // ctx.body = db;
-})
+// 新建
+router.post('/',UserCtl.create)
 
-router.delete('/:id',(ctx)=>{
-    // ctx.body = db;
-})
+// 查单个
+router.get('/:id',UserCtl.findById)
 
+// 修改
+router.put('/:id',UserCtl.update)
+
+// 删除一个
+router.delete('/:id',UserCtl.delete)
 
 
 module.exports = router

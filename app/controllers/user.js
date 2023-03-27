@@ -3,10 +3,12 @@ const User = require('../models/users')
 class UserCtl {
     // 获取用户列表
     async find(ctx){
+        console.log('11111')
         ctx.body = await User.find();
     }
     // 获取指定用户
     async findById(ctx){
+        console.log('ctx.params.id',ctx.params.id)
         const user = await User.findById(ctx.params.id);
         if(!user){
             ctx.throw(404,'用户不存在')
@@ -15,18 +17,13 @@ class UserCtl {
     }
     // 新建用户
     async create(ctx){
-        ctx.verifyParams({
-            name: {type:'string', required:true},
-        })
         const user = await new User(ctx.request.body).save()
         ctx.body = user
     }
     // 更新接口
     async update(ctx){
-        ctx.verifyParams({
-            name: {type:'string', required:true}
-        })
-        const user = await User.findByIdAndUpdate(ctx.params.id, new User(ctx.request.body))
+        console.log('222222')
+        const user = await User.findByIdAndUpdate(ctx.params.id, ctx.request.body)
         if (!user){
             ctx.throw(404)
         }
@@ -43,3 +40,5 @@ class UserCtl {
 }
 
 module.exports = new UserCtl()
+
+

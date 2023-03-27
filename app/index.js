@@ -2,6 +2,11 @@ const Koa = require('koa');
 const app = new Koa();
 const mongoose = require('mongoose')
 const {connectionStr} = require('./config')
+const bodyParser = require('koa-bodyparser');
+
+// 使用 body-parser 中间件
+app.use(bodyParser());
+
 const routing = require('./routes')
 
 // 导入所有的路由！
