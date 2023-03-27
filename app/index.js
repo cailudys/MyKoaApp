@@ -3,9 +3,12 @@ const app = new Koa();
 const mongoose = require('mongoose')
 const {connectionStr} = require('./config')
 const bodyParser = require('koa-bodyparser');
+const parameter = require('koa-parameter');
 
 // 使用 body-parser 中间件
 app.use(bodyParser());
+// 使用 koa-parameter 中间件
+app.use(parameter(app));
 
 const routing = require('./routes')
 
