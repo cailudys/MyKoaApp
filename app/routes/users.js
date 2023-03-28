@@ -47,6 +47,9 @@ router.delete('/:id', auth, UserCtl.checkOwner, UserCtl.delete)
 // 登陆
 router.post('/login', UserCtl.login)
 
+// 获取关注列表
+router.get('/:id/following', UserCtl.listFollowing)
+
+router.put('/following/:id', auth, UserCtl.follow)
 
 module.exports = router
-

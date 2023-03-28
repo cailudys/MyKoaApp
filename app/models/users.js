@@ -20,7 +20,7 @@ const userSchema = new Schema({
                 company: { type: String },
                 job: { type: String }
             }
-        ], 
+        ],
         select: false
     },
     educations: {
@@ -30,9 +30,13 @@ const userSchema = new Schema({
             diploma: { type: Number, enum: [1, 2, 3, 4, 5] },
             entrance_year: { type: Number },
             graduation_year: { type: Number },
-        }], 
+        }],
         select: false
     },
+    following: {
+        type: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+        select: false
+    }
 
 })
 

@@ -9,8 +9,8 @@ class UserCtl {
     }
     // 获取指定用户逻辑
     async findById(ctx) {
-        const {fields} = ctx.query
-        const selectFields = fields.split(';').filter(f=>f).map(f=>' +' + f ).join('')
+        const { fields } = ctx.query
+        const selectFields = fields.split(';').filter(f => f).map(f => ' +' + f).join('')
         const user = await User.findById(ctx.params.id).select(selectFields);
         if (!user) {
             ctx.throw(404, '用户不存在')
@@ -32,7 +32,7 @@ class UserCtl {
 
     // 授权逻辑
     async checkOwner(ctx, next) {
-        if (ctx.params.id !== ctx.state.user.__id) { ctx.throw(403, '没有权限') }
+        if (ctx.params.id !== ctx.state.user._id) { ctx.throw(403, '没有权限') }
         await next();
     }
 
@@ -41,12 +41,12 @@ class UserCtl {
         ctx.verifyParams({
             name: { type: 'string', required: false },
             password: { type: 'string', required: false },
-            gender:  { type: 'string', required: false },
-            headline:  { type: 'string', required: false },
-            location:  { type: 'array', itemType: 'string', required: false },
-            business:  { type: 'string', required: false },
-            employments:  { type: 'array', itemType: 'object', required: false },
-            educations:  { type: 'array', itemType: 'object', required: false },
+            gender: { type: 'string', required: false },
+            headline: { type: 'string', required: false },
+            location: { type: 'array', itemType: 'string', required: false },
+            business: { type: 'string', required: false },
+            employments: { type: 'array', itemType: 'object', required: false },
+            educations: { type: 'array', itemType: 'object', required: false },
         })
         const user = await User.findByIdAndUpdate(ctx.params.id, ctx.request.body)
         if (!user) {
@@ -70,9 +70,26 @@ class UserCtl {
         })
         const user = await User.findOne(ctx.request.body)
         if (!user) { ctx.throw(401, '用户名或密码不正确') }
-        const { __id, name } = user;
-        const token = jsonwebtoken.sign({ __id, name }, secret, { expiresIn: '1d' })
+        const { _id, name } = user;
+        const token = jsonwebtoken.sign({ _id, name }, secret, { expiresIn: '1d' })
         ctx.body = { token }
+    }
+
+    // 获取自己关注的人的列表
+    async listFollowing(ctx) {
+        const user = await User.findById(ctx.params.id).select('+following').populate('following')
+        if (!user) { ctx.throw(404) }
+        ctx.body = user.following
+    }
+
+    // 关注接口
+    async follow(ctx) {
+        const me = await User.findById(ctx.state.user._id).select('+following')
+        if (!me.following.map(id => id.toString()).includes(ctx.params.id)) {
+            me.following.push(ctx.params.id);
+            me.save()
+        }
+        ctx.status = 204
     }
 
 }
