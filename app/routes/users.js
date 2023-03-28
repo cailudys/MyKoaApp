@@ -50,6 +50,7 @@ router.post('/login', UserCtl.login)
 // 获取关注列表
 router.get('/:id/following', UserCtl.listFollowing)
 
+// 关注某人
 router.put('/following/:id', auth, UserCtl.follow)
 
 module.exports = router

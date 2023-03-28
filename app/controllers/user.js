@@ -84,6 +84,7 @@ class UserCtl {
 
     // 关注接口
     async follow(ctx) {
+        console.log('ctx.state.user._id',ctx.state.user._id)
         const me = await User.findById(ctx.state.user._id).select('+following')
         if (!me.following.map(id => id.toString()).includes(ctx.params.id)) {
             me.following.push(ctx.params.id);
