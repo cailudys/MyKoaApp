@@ -3,11 +3,11 @@ const User = require('../models/users')
 const { secret } = require('../config')
 
 class UserCtl {
-    // 获取用户列表
+    // 获取用户列表逻辑
     async find(ctx) {
         ctx.body = await User.find();
     }
-    // 获取指定用户
+    // 获取指定用户逻辑
     async findById(ctx) {
         const user = await User.findById(ctx.params.id);
         if (!user) {
@@ -15,7 +15,7 @@ class UserCtl {
         }
         ctx.body = user;
     }
-    // 新建用户
+    // 新建用户逻辑
     async create(ctx) {
         ctx.verifyParams({
             name: { type: 'string', required: true },
@@ -27,7 +27,14 @@ class UserCtl {
         const user = await new User(ctx.request.body).save()
         ctx.body = user
     }
-    // 更新接口
+
+    // 授权逻辑
+    async checkOwner(ctx, next) {
+        if (ctx.params.id !== ctx.state.user.__id) { ctx.throw(403, '没有权限') }
+        await next();
+    }
+
+    // 更新逻辑
     async update(ctx) {
         ctx.verifyParams({
             name: { type: 'string', required: false },
@@ -39,7 +46,7 @@ class UserCtl {
         }
         ctx.body = user
     }
-    // 删除接口
+    // 删除逻辑
     async delete(ctx) {
         const user = await User.findByIdAndRemove(ctx.params.id)
         if (!user) {
@@ -47,7 +54,7 @@ class UserCtl {
         }
         ctx.status = 204
     }
-    // 登陆接口
+    // 登陆逻辑
     async login(ctx) {
         ctx.verifyParams({
             name: { type: 'string', required: true },
