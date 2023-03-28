@@ -1,24 +1,16 @@
 const Koa = require('koa');
 const app = new Koa();
 const mongoose = require('mongoose')
-const {connectionStr} = require('./config')
-const bodyParser = require('koa-bodyparser');
+const { connectionStr } = require('./config')
+const { koaBody } = require('koa-body');
+const  koaStatic  = require('koa-static');
 const parameter = require('koa-parameter');
-
-// 使用 body-parser 中间件
-app.use(bodyParser());
-// 使用 koa-parameter 中间件
-app.use(parameter(app));
-
-const routing = require('./routes')
-
-// 导入所有的路由！
-routing(app);
+const path = require('path')
 
 // 连接数据库
 const connect = async () => {
   try {
-    await mongoose.connect(connectionStr,{
+    await mongoose.connect(connectionStr, {
       useNewUrlParser: true,
       // useUnifiedTopology: true
     });
@@ -30,7 +22,28 @@ const connect = async () => {
 
 connect();
 
-mongoose.connection.on('error',console.error)
+mongoose.connection.on('error', console.error)
+
+// koa-static 注册
+app.use(koaStatic(path.join(__dirname, 'public')))
+
+// 使用 koa-Body 中间件
+app.use(koaBody({
+  multipart: true,
+  formidable: {
+    uploadDir: path.join(__dirname, '/public/uploads'),
+    keepExtensions: true
+  }
+}));
+// 使用 koa-parameter 中间件
+app.use(parameter(app));
+
+const routing = require('./routes')
+
+// 导入所有的路由！
+routing(app);
+
+
 
 
 // 启动应用
