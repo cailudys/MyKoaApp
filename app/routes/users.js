@@ -51,6 +51,12 @@ router.post('/login', UserCtl.login)
 router.get('/:id/following', UserCtl.listFollowing)
 
 // 关注某人
-router.put('/following/:id', auth, UserCtl.follow)
+router.put('/following/:id', auth, checkUserExist, UserCtl.follow)
+
+// 取消关注某人
+router.delete('/following/:id', auth, checkUserExist, UserCtl.unfollow)
+
+// 获取粉丝列表
+router.get('/:id/followers', UserCtl.listFollowers)
 
 module.exports = router

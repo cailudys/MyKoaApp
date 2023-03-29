@@ -92,6 +92,29 @@ class UserCtl {
         ctx.status = 204
     }
 
+    // 检测用户是否存在
+    async checkUserExist(ctx, next) {
+        const user = await User.findById(ctx.params.id);
+        if (!user) { ctx.throw(404, "用户不存在") }
+        await next();
+    }
+
+    // 取消关注接口
+    async unfollow(ctx) {
+        const me = await User.findById(ctx.state.user._id).select('+following')
+        const index = me.following.map(id => id.toString()).indexOf(ctx.params.id)
+        if (index > -1) {
+            me.following.splice(index, 1);
+            me.save();
+        }
+        ctx.status = 204
+    }
+
+    // 获取粉丝接口
+    async listFollowers(ctx) {
+        const user = await User.find({ following: ctx.params.id });
+        ctx.body = user
+    }
 }
 
 module.exports = new UserCtl()
