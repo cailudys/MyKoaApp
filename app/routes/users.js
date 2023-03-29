@@ -7,7 +7,7 @@ const Router = require('koa-router')
 
 const router = new Router({ prefix: '/users' })
 
-const UserCtl = require('../controllers/user')
+const UserCtl = require('../controllers/users')
 
 // 引入秘钥
 const { secret } = require('../config')
@@ -51,10 +51,10 @@ router.post('/login', UserCtl.login)
 router.get('/:id/following', UserCtl.listFollowing)
 
 // 关注某人
-router.put('/following/:id', auth, checkUserExist, UserCtl.follow)
+router.put('/following/:id', auth, UserCtl.checkUserExist, UserCtl.follow)
 
 // 取消关注某人
-router.delete('/following/:id', auth, checkUserExist, UserCtl.unfollow)
+router.delete('/following/:id', auth, UserCtl.checkUserExist, UserCtl.unfollow)
 
 // 获取粉丝列表
 router.get('/:id/followers', UserCtl.listFollowers)
