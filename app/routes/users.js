@@ -60,10 +60,13 @@ router.delete('/following/:id', auth, UserCtl.checkUserExist, UserCtl.unfollow)
 // 获取粉丝列表
 router.get('/:id/followers', UserCtl.listFollowers)
 
+// 获取关注话题
+router.get('/:id/followingTopics', UserCtl.listFollowingTopics)
+
 // 关注话题
-router.put('/followingTopics/:id', auth, TopicCtl.checkTopicExist, TopicCtl.followTopic)
+router.put('/followingTopics/:id', auth, TopicCtl.checkTopicExist, UserCtl.followTopic)
 
 // 取消关注话题
-router.delete('/followingTopics/:id', auth, TopicCtl.checkTopicExist, TopicCtl.unfollowTopic)
+router.delete('/followingTopics/:id', auth, TopicCtl.checkTopicExist, UserCtl.unfollowTopic)
 
 module.exports = router
