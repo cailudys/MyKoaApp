@@ -5,7 +5,10 @@ const { secret } = require('../config')
 class UserCtl {
     // 获取用户列表逻辑
     async find(ctx) {
-        ctx.body = await User.find();
+        const { per_page = 10 } = ctx.query
+        const page = Math.max(ctx.query.page * 1, 1) - 1;
+        const perPage = Math.max(per_page * 1, 1);
+        ctx.body = await User.find().limit(perPage).skip(perPage * page);
     }
     // 获取指定用户逻辑
     async findById(ctx) {
