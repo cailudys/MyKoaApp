@@ -9,14 +9,25 @@ class UserCtl {
         const page = Math.max(ctx.query.page * 1, 1) - 1;
         const perPage = Math.max(per_page * 1, 1);
         ctx.body = await User
-        .find({name: new RegExp(ctx.query.q)})
-        .limit(perPage).skip(perPage * page);
+            .find({ name: new RegExp(ctx.query.q) })
+            .limit(perPage).skip(perPage * page);
     }
     // 获取指定用户逻辑
     async findById(ctx) {
         const { fields = '' } = ctx.query
         const selectFields = fields.split(';').filter(f => f).map(f => ' +' + f).join('')
-        const user = await User.findById(ctx.params.id).select(selectFields);
+        const populateStr = fields.split(';').filter(f => f).map(f => {
+            if (f === 'employments') {
+                return 'employments.company employments.job'
+            }
+            if (f === 'educations') {
+                return 'educations.school educations.major'
+            }
+            return f
+        }).join('')
+
+        const user = await User.findById(ctx.params.id).select(selectFields)
+            .populate(populateStr)
         if (!user) {
             ctx.throw(404, '用户不存在')
         }
