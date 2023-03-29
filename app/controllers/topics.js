@@ -1,5 +1,6 @@
 const Topic = require('../models/topics')
 
+
 class TopicCtl {
     // 获取话题列表
     async find(ctx) {
@@ -39,6 +40,33 @@ class TopicCtl {
         })
         const topic = await Topic.findByIdAndUpdate(ctx.params.id, ctx.request.body)
         ctx.body = topic
+    }
+    // 检测话题是否存在
+    async checkTopicExist(ctx, next) {
+        const topic = await Topic.findById(ctx.params.id);
+        if (!topic) { ctx.throw(404, "话题不存在") }
+        await next();
+    }
+
+    // 关注话题
+    async followTopic(ctx) {
+        const me = await User.findById(ctx.state.user._id).select('+followingTopics')
+        if (!me.followingTopics.map(id => id.toString()).includes(ctx.params.id)) {
+            me.followingTopics.push(ctx.params.id);
+            me.save();
+        }
+        ctx.status = 204
+    }
+
+    // 取消关注话题
+    async unfollowTopic(ctx) {
+        const me = await User.findById(ctx.state.user._id).select('+followingTopics')
+        const index = me.followingTopics.map(id => id.toString()).indexOf(ctx.params.id)
+        if (index > -1) {
+            me.followingTopics.splice(index, 1);
+            me.save();
+        }
+        ctx.status = 204
     }
 }
 

@@ -1,7 +1,6 @@
 const jsonwebtoken = require('jsonwebtoken')
 const User = require('../models/users')
-
-const { secret } = require('../config')
+const { secret } = require('../config');
 
 class UserCtl {
     // 获取用户列表逻辑
@@ -131,27 +130,6 @@ class UserCtl {
     async listFollowers(ctx) {
         const user = await User.find({ following: ctx.params.id });
         ctx.body = user
-    }
-
-    // 关注话题
-    async followTopic(ctx) {
-        const me = await User.findById(ctx.state.user._id).select('+followingTopics')
-        if (!me.followingTopics.map(id => id.toString()).includes(ctx.params.id)) {
-            me.followingTopics.push(ctx.params.id);
-            me.save();
-        }
-        ctx.status = 204
-    }
-
-    // 取消关注话题
-    async unfollowTopic(ctx) {
-        const me = await User.findById(ctx.state.user._id).select('+followingTopics')
-        const index = me.followingTopics.map(id => id.toString()).indexOf(ctx.params.id)
-        if (index > -1) {
-            me.followingTopics.splice(index, 1);
-            me.save();
-        }
-        ctx.status = 204
     }
 }
 

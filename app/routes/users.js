@@ -8,6 +8,7 @@ const Router = require('koa-router')
 const router = new Router({ prefix: '/users' })
 
 const UserCtl = require('../controllers/users')
+const TopicCtl = require('../controllers/topics')
 
 // 引入秘钥
 const { secret } = require('../config')
@@ -58,5 +59,11 @@ router.delete('/following/:id', auth, UserCtl.checkUserExist, UserCtl.unfollow)
 
 // 获取粉丝列表
 router.get('/:id/followers', UserCtl.listFollowers)
+
+// 关注话题
+router.put('/followingTopics/:id', auth, TopicCtl.checkTopicExist, TopicCtl.followTopic)
+
+// 取消关注话题
+router.delete('/followingTopics/:id', auth, TopicCtl.checkTopicExist, TopicCtl.unfollowTopic)
 
 module.exports = router
