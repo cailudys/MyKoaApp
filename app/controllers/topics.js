@@ -1,4 +1,5 @@
 const Topic = require('../models/topics')
+const User = require('../models/users')
 
 
 class TopicCtl {
@@ -47,7 +48,11 @@ class TopicCtl {
         if (!topic) { ctx.throw(404, "话题不存在") }
         await next();
     }
-
+    // 获取话题关注者接口
+    async listFollowers(ctx) {
+        const user = await User.find({ followingTopics: ctx.params.id });
+        ctx.body = user
+    }
 }
 
 module.exports = new TopicCtl()
