@@ -131,6 +131,28 @@ class UserCtl {
         const user = await User.find({ following: ctx.params.id });
         ctx.body = user
     }
+
+    // 关注话题
+    async followTopic(ctx) {
+        const me = await User.findById(ctx.state.user._id).select('+followTopics')
+        if (!me.followTopics.map(id => id.toString()).includes(ctx.params.id)) {
+            me.followTopics.push(ctx.params.id);
+            me.save();
+        }
+        ctx.status = 204
+    }
+
+
+    // 取消关注话题
+    async unfollowTopic(ctx) {
+        const me = await User.findById(ctx.state.user._id).select('+followTopics')
+        const index = me.followTopics.map(id => id.toString()).indexOf(ctx.params.id)
+        if (index > -1) {
+            me.followTopics.splice(index, 1);
+            me.save();
+        }
+        ctx.status = 204
+    }
 }
 
 module.exports = new UserCtl()
